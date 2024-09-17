@@ -40,6 +40,8 @@ public class UserEntity {
 	private String createdBy;
 	
 	private String isRegistered;
+	
+	private String isInvited;
 
 	public UUID getId() {
 		return id;
