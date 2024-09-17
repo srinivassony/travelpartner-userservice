@@ -18,9 +18,8 @@ public class GalleryEntity {
 	@Column(name = "id")
 	private UUID id;
 	
+	@Column(name = "imageId")
 	private String imageId;
-	
-	
 	
 	
 }
