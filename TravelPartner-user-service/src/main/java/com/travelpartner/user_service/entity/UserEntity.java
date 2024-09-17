@@ -38,6 +38,8 @@ public class UserEntity {
 
 	@Column(name = "createdBy")
 	private String createdBy;
+	
+	private String isRegistered;
 
 	public UUID getId() {
 		return id;
