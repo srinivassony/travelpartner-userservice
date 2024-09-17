@@ -8,6 +8,8 @@ public class TravelPartnerUserServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TravelPartnerUserServiceApplication.class, args);
+		
+		System.out.println("Application started!");
 	}
 
 }
