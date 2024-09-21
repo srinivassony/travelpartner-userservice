@@ -38,7 +38,7 @@ public class RegistrationServiceImp implements RegistrationService {
 			String errorMessages = "User email already exists. Try with a different email.";
 			
 			CustomResponse<String> responseBody = new CustomResponse<>(errorMessages, "BAD_REQUEST",
-					HttpStatus.BAD_REQUEST.value());
+					HttpStatus.BAD_REQUEST.value(),"/api/v1/add/user",LocalDateTime.now());
 			
 			// If the user exists, return a message with a bad status
 
@@ -49,7 +49,7 @@ public class RegistrationServiceImp implements RegistrationService {
 
 		String email = userEntity.getEmail() != null ? userEntity.getEmail() : null;
 
-		String role = "ROLE_ADMIN,";
+		String role = "ROLE_USER,";
 
 		String password = userEntity.getPassword() != null ? passwordEncoder.encode(userEntity.getPassword()) : null;
 
@@ -66,7 +66,7 @@ public class RegistrationServiceImp implements RegistrationService {
 		System.out.println("userInfo" + " " + userInfo);
 		
 		CustomResponse<UserEntity> responseBody = new CustomResponse<>(userInfo, "CREATED",
-				HttpStatus.OK.value());
+				HttpStatus.OK.value(),"/api/v1/add/user",LocalDateTime.now());
 
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
