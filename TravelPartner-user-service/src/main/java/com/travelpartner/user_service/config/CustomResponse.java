@@ -14,6 +14,7 @@ public class CustomResponse<T> {
 	private String path;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime timeStamp;
+	private String token;
 
 	public CustomResponse(T body, String statusCodeValue, int statusCode, String path, LocalDateTime timeStamp) {
 		this.responseBody = new HashMap<>();

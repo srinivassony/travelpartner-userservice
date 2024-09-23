@@ -41,7 +41,17 @@ public class CustomErrorController implements ErrorController {
 					HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getRequestURI(), LocalDateTime.now());
 
 			return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
-		} else {
+		} else if (statusCode == 403) {
+
+			String errorMessages = "You do not have permission to access this resource.";
+
+			CustomResponse<String> responseBody = new CustomResponse<>(errorMessages, "FORBIDDEN_ERROR",
+					HttpStatus.FORBIDDEN.value(), request.getRequestURI(), LocalDateTime.now());
+
+			return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+		}
+
+		else {
 			System.out.println("herrrrrrr");
 
 			String errorMessages = "Something went wrong!";
