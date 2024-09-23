@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.travelpartner.user_service.config.CustomResponse;
 import com.travelpartner.user_service.dao.RegistrationDAO;
 import com.travelpartner.user_service.entity.UserEntity;
-import com.travelpartner.user_service.utill.Utill;
+import com.travelpartner.user_service.utill.Utills;
 
 import jakarta.validation.Valid;
 
@@ -25,7 +26,7 @@ public class RegistrationServiceImp implements RegistrationService {
 	PasswordEncoder passwordEncoder;
 
 	@Autowired
-	Utill utill;
+	Utills utill;
 
 	@Override
 	public ResponseEntity<?> createUserInfo(@Valid UserEntity userEntity) {
@@ -36,18 +37,19 @@ public class RegistrationServiceImp implements RegistrationService {
 
 			String errorMessages = "User email already exists. Try with a different email.";
 			
-//			CustomResponse<String> errorResponse = new CustomResponse<>(errorMessages, "BAD_REQUEST",
-//					HttpStatus.BAD_REQUEST.value());
-			// If the user exists, return a message with a conflict status
+			CustomResponse<String> responseBody = new CustomResponse<>(errorMessages, "BAD_REQUEST",
+					HttpStatus.BAD_REQUEST.value(),"/api/v1/add/user",LocalDateTime.now());
+			
+			// If the user exists, return a message with a bad status
 
-			return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
 		}
 
 		String userName = userEntity.getUserName() != null ? userEntity.getUserName() : null;
 
 		String email = userEntity.getEmail() != null ? userEntity.getEmail() : null;
 
-		String role = "ROLE_ADMIN,";
+		String role = "ROLE_USER,";
 
 		String password = userEntity.getPassword() != null ? passwordEncoder.encode(userEntity.getPassword()) : null;
 
@@ -62,8 +64,11 @@ public class RegistrationServiceImp implements RegistrationService {
 		UserEntity userInfo = registrationDAO.createUser(userDetails);
 
 		System.out.println("userInfo" + " " + userInfo);
+		
+		CustomResponse<UserEntity> responseBody = new CustomResponse<>(userInfo, "CREATED",
+				HttpStatus.OK.value(),"/api/v1/add/user",LocalDateTime.now());
 
-		return new ResponseEntity<>(userInfo, HttpStatus.CREATED);
+		return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	}
 
 }

@@ -1,11 +1,13 @@
 package com.travelpartner.user_service.utill;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class Utill {
+public class Utills {
 
 	private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -18,5 +20,11 @@ public class Utill {
 		}
 
 		return builder.toString().toUpperCase();
+	}
+
+	public String getShortDateFormayte() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+		return sdf.format(timestamp);
 	}
 }
