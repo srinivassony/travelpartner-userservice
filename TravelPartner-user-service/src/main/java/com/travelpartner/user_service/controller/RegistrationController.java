@@ -44,8 +44,6 @@ public class RegistrationController {
 	public ResponseEntity<?> createUser(@Valid @RequestBody UserEntity userEntity, BindingResult result,
 			HttpServletRequest req, HttpServletResponse res) {
 
-		System.out.println("Request URI: " + req.getRequestURI());
-
 		if (result.hasErrors()) {
 
 			// Collecting error messages
