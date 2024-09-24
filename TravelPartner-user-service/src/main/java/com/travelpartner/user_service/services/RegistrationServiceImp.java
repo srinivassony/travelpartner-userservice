@@ -117,7 +117,7 @@ public class RegistrationServiceImp implements RegistrationService {
 			System.out.println("authentication" + " " + authentication);
 
 			// Prepare user details for the response
-			UserInfoDTO user = (UserInfoDTO) userDetails; // Cast to your UserEntity
+			  UserInfoDTO user = (UserInfoDTO) authentication.getPrincipal();
 			Map<String, Object> response = new HashMap<>();
 			response.put("token", token);
 			response.put("id", user.getId()); // Assuming you have a getId() method

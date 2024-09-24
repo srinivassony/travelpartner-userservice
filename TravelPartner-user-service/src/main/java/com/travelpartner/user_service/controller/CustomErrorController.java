@@ -57,7 +57,7 @@ public class CustomErrorController implements ErrorController {
 			String errorMessages = "Something went wrong!";
 
 			CustomResponse<String> responseBody = new CustomResponse<>(errorMessages, "BAD_REQUEST",
-					HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), LocalDateTime.now());
+					statusCode, request.getRequestURI(), LocalDateTime.now());
 
 			return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
 		}

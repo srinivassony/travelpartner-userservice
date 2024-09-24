@@ -1,5 +1,6 @@
 package com.travelpartner.user_service.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,17 +11,23 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.travelpartner.user_service.filter.JwtAuthFilter;
 import com.travelpartner.user_service.utill.UserInfo;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+	@Autowired
+	JwtAuthFilter jwtAuthFilter;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -32,7 +39,7 @@ public class SecurityConfig {
 
 		return new UserInfo();
 	}
-	
+
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -52,12 +59,10 @@ public class SecurityConfig {
 				.requestMatchers("/error").permitAll() // endpoints
 //				 .requestMatchers("/login").permitAll()
 				.requestMatchers("/api/v2/**").authenticated() // Secured endpoints
-		)
-//		.formLogin(form -> form
-//				.loginProcessingUrl("/api/v1/user/authenticate") // URL to handle login
-//				.permitAll()) // Allow access to login URL
-//				.authenticationProvider(authenticationProvider())
-				.csrf(csrf -> csrf.disable()); // Disable CSRF 
+		).authenticationProvider(authenticationProvider()) // Use your custom AuthenticationProvider
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
+				.csrf(csrf -> csrf.disable()); // Disable CSRF
 
 		return http.build();
 	}

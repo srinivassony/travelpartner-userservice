@@ -67,10 +67,10 @@ public class RegistrationController {
 	@PostMapping("/user/authenticate")
 	public ResponseEntity<?> login(@RequestBody UserEntity userEntity, HttpServletRequest req,
 			HttpServletResponse res) {
-		
-			System.out.println("email" + " " + userEntity.getEmail());
-			
-			return registrationService.athunticateUser(userEntity, req, res);
+
+		System.out.println("email" + " " + userEntity.getEmail());
+
+		return registrationService.athunticateUser(userEntity, req, res);
 	}
 
 }
