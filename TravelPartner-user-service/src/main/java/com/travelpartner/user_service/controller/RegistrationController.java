@@ -70,5 +70,7 @@ public class RegistrationController {
 
 		return registrationService.athunticateUser(userEntity, req, res);
 	}
+	
+	
 
 }

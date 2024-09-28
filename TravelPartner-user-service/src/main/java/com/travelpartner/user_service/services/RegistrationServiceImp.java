@@ -24,6 +24,8 @@ import com.travelpartner.user_service.config.CustomResponse;
 import com.travelpartner.user_service.dao.RegistrationDAO;
 import com.travelpartner.user_service.dto.UserInfoDTO;
 import com.travelpartner.user_service.entity.UserEntity;
+import com.travelpartner.user_service.kafka.UserEmailProducer;
+import com.travelpartner.user_service.utill.HtmlTemplate;
 import com.travelpartner.user_service.utill.JwtTokenProvider;
 import com.travelpartner.user_service.utill.UserInfo;
 import com.travelpartner.user_service.utill.Utills;
@@ -52,6 +54,12 @@ public class RegistrationServiceImp implements RegistrationService {
 
 	@Autowired
 	UserInfo userInfo;
+
+	@Autowired
+	UserEmailProducer userEmailProducer;
+	
+	@Autowired
+	HtmlTemplate htmlTemplate;
 
 	@Override
 	public ResponseEntity<?> createUserInfo(@Valid UserEntity userEntity, HttpServletRequest req,
@@ -89,7 +97,32 @@ public class RegistrationServiceImp implements RegistrationService {
 
 		UserEntity userInfo = registrationDAO.createUser(userDetails);
 
+		if (userInfo.getId() == null) {
+
+			System.out.println("user not created!");
+
+			String errorMessages = "User not created. Please try again!";
+
+			CustomResponse<String> responseBody = new CustomResponse<>(errorMessages, "BAD_REQUEST",
+					HttpStatus.BAD_REQUEST.value(), req.getRequestURI(), LocalDateTime.now());
+
+			// If the user exists, return a message with a bad status
+
+			return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+		}
+
 		System.out.println("userInfo" + " " + userInfo);
+		
+		String subject = userInfo.getUserName() + " " + "you are invited to Travel-partner";
+		String content = htmlTemplate.InviteUser(userInfo.getId(),userInfo.getUserName());
+		
+		 // Create a map to store name and id
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("subject", subject);
+        userData.put("toEmailId", userInfo.getEmail());
+        userData.put("content", content);
+
+		userEmailProducer.sendMessage(userData);
 
 		CustomResponse<UserEntity> responseBody = new CustomResponse<>(userInfo, "CREATED", HttpStatus.OK.value(),
 				req.getRequestURI(), LocalDateTime.now());
@@ -117,7 +150,7 @@ public class RegistrationServiceImp implements RegistrationService {
 			System.out.println("authentication" + " " + authentication);
 
 			// Prepare user details for the response
-			  UserInfoDTO user = (UserInfoDTO) authentication.getPrincipal();
+			UserInfoDTO user = (UserInfoDTO) authentication.getPrincipal();
 			Map<String, Object> response = new HashMap<>();
 			response.put("token", token);
 			response.put("id", user.getId()); // Assuming you have a getId() method
